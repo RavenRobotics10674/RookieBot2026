@@ -61,6 +61,7 @@ public class HelloWorld extends LinearOpMode {
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
+        telemetry.addData("Greeting", "Hello World!");
         telemetry.update();
 
         // Initialize the hardware variables. Note that the strings used here as parameters

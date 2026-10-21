@@ -83,7 +83,7 @@ public class HelloWorld extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
-            // Setup a variable for each drive wheel to save power level for telemetry
+            // Set up a variable for each drive wheel to save power level for telemetry
             double leftPower;
             double rightPower;
 
@@ -96,7 +96,6 @@ public class HelloWorld extends LinearOpMode {
             double turn  =  gamepad1.right_stick_x;
             leftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
             rightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
-
             // Tank Mode uses one stick to control each wheel.
             // - This requires no math, but it is hard to drive forward slowly and keep straight.
             // leftPower  = -gamepad1.left_stick_y ;
@@ -107,6 +106,7 @@ public class HelloWorld extends LinearOpMode {
             rightDrive.setPower(rightPower);
 
             // Show the elapsed game time and wheel power.
+            telemetry.addData("Turn & Drive", "Drive" + String.valueOf(drive) + "Turn" + String.valueOf(turn));
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();

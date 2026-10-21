@@ -106,7 +106,6 @@ public class HelloWorld extends LinearOpMode {
             rightDrive.setPower(rightPower);
 
             // Show the elapsed game time and wheel power.
-            telemetry.addData("Turn & Drive", "Drive" + String.valueOf(drive) + "Turn" + String.valueOf(turn));
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();

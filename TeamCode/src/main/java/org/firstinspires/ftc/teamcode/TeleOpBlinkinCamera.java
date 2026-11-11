@@ -90,11 +90,6 @@ public class TeleOpBlinkinCamera extends LinearOpMode {
 
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
-    private DcMotorEx launcher = null;
-    private DcMotor intake = null;
-    private CRServo leftIntakeServo = null;
-    private CRServo rightIntakeServo = null;
-    private CRServo windmillServo = null;
 
     RevBlinkinLedDriver blinkinLedDriver;
     public final int LAUNCHER_TARGET_VELOCITY = 1250;
@@ -123,30 +118,9 @@ public class TeleOpBlinkinCamera extends LinearOpMode {
          */
         leftDrive.setZeroPowerBehavior(BRAKE);
         rightDrive.setZeroPowerBehavior(BRAKE);
-        intake.setZeroPowerBehavior(BRAKE);
 
-        /*
-         * Here we set our launcher to the RUN_USING_ENCODER runmode.
-         * If you notice that you have no control over the velocity of the motor, it just jumps
-         * right to a number much higher than your set point, make sure that your encoders are plugged
-         * into the port right beside the motor itself. And that the motors polarity is consistent
-         * through any wiring.
-         */
-        launcher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        launcher.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(40, 0, 0, 12.5));
 
-        /*
-         * set Feeders to an initial value to initialize the servo controller
-         */
-        leftIntakeServo.setPower(0);
-        rightIntakeServo.setPower(0);
-        windmillServo.setPower(0);
-
-        /*
-         * Much like our drivetrain motors, we set the right intake servo to reverse so that both
-         * servos work to pull elements into the intake.
-         */
 
         /*
          * Tell the driver that initialization is complete.

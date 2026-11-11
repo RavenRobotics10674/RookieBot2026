@@ -39,6 +39,13 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagClusterDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.apriltag.AprilTagSingleDetection;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import java.util.List;
 
@@ -80,7 +87,24 @@ public class AprilTagBlinkin extends LinearOpMode {
      */
     private VisionPortal visionPortal;
 
+    private DcMotor leftDrive = null;
+    private DcMotor rightDrive = null;
+    private DcMotorEx launcher = null;
+    private DcMotor intake = null;
+    private CRServo leftIntakeServo = null;
+    private CRServo rightIntakeServo = null;
+    private CRServo windmillServo = null;
+
     RevBlinkinLedDriver blinkinLedDriver;
+    public final int LAUNCHER_TARGET_VELOCITY = 1250;
+    public final int LAUNCHER_MIN_VELOCITY = 1200;
+
+    double leftPower;
+    double rightPower;
+
+    // Create a variable to set to the intake.
+    double intakePower;
+
 
     @Override
     public void runOpMode() {
@@ -93,6 +117,8 @@ public class AprilTagBlinkin extends LinearOpMode {
         telemetry.addData(">", "Touch START to start OpMode");
         telemetry.update();
         waitForStart();
+
+
 
         while (opModeIsActive()) {
 
@@ -107,17 +133,24 @@ public class AprilTagBlinkin extends LinearOpMode {
             } else if (gamepad1.dpad_up) {
                 visionPortal.resumeStreaming();
             }
+
+
+
+
+
+
             List<AprilTagDetection> currentDetections = aprilTag.getDetections();
             boolean has_tags = currentDetections.size() > 0;
-            if (has_tags){
-                if curre
-                //LED ON
-                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.SINELON_RAINBOW_PALETTE);
-            }
-            else {
-                //LED OFF
-                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
-            }
+
+
+                if (has_tags){
+                    //LED ON
+                    blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.SINELON_RAINBOW_PALETTE);
+                }
+                else {
+                    //LED OFF
+                    blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+                }
             // Share the CPU.
             sleep(20);
         }

@@ -125,9 +125,7 @@ public class TeleOpBlinkinCamera extends LinearOpMode {
         /*
          * Tell the driver that initialization is complete.
          */
-        telemetry.addData("Status", "Initialized");
 
-        arcadeDrive(-gamepad1.left_stick_y, gamepad1.right_stick_x);
 
         /*
          * Set the intake power variable to equal the right trigger, minus the left trigger.
@@ -177,7 +175,7 @@ public class TeleOpBlinkinCamera extends LinearOpMode {
                 visionPortal.resumeStreaming();
             }
 
-
+            arcadeDrive(-gamepad1.left_stick_y, gamepad1.right_stick_x);
 
 
 

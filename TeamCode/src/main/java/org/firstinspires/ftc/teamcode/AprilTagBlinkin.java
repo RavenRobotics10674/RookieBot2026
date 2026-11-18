@@ -134,9 +134,7 @@ public class AprilTagBlinkin extends LinearOpMode {
                 visionPortal.resumeStreaming();
             }
 
-
-
-
+            arcadeDrive(-gamepad1.left_stick_y, gamepad1.right_stick_x);
 
 
             List<AprilTagDetection> currentDetections = aprilTag.getDetections();

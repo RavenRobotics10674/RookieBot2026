@@ -29,12 +29,16 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
+
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -86,13 +90,8 @@ public class FollowAprilTag extends LinearOpMode {
 
     private DcMotor leftDrive = null;
     private DcMotor rightDrive = null;
-    private DcMotorEx launcher = null;
-    private DcMotor intake = null;
-    private CRServo leftIntakeServo = null;
-    private CRServo rightIntakeServo = null;
-    private CRServo windmillServo = null;
 
-
+    RevBlinkinLedDriver blinkinLedDriver;
     public final int LAUNCHER_TARGET_VELOCITY = 1250;
     public final int LAUNCHER_MIN_VELOCITY = 1200;
 
@@ -106,15 +105,61 @@ public class FollowAprilTag extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        leftDrive = hardwareMap.get(DcMotor.class, "left_drive");
+        rightDrive = hardwareMap.get(DcMotor.class, "right_drive");
+
+        leftDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);
+
+        /*
+         * Setting zeroPowerBehavior to BRAKE enables a "brake mode". This causes the motor to
+         * slow down much faster when it is coasting. This creates a much more controllable
+         * drivetrain. As the robot stops much quicker.
+         */
+        leftDrive.setZeroPowerBehavior(BRAKE);
+        rightDrive.setZeroPowerBehavior(BRAKE);
+
+
+
+
+        /*
+         * Tell the driver that initialization is complete.
+         */
+
+
+        /*
+         * Set the intake power variable to equal the right trigger, minus the left trigger.
+         * Each trigger outputs a signal from 0-1, with 0 as fully released, and 1 fully depressed.
+         * This gives us proportional control of the intake speed. The speed increases as we pull
+         * the right trigger further. It's occasionally helpful to be able to reverse the intake,
+         * so we also factor in the left trigger. If the left trigger is fully depressed,
+         * the intakePower variable will be -1. If the right trigger is fully depressed, the variable
+         * will be 1. If the driver pulls both triggers, the intake will remain off.
+         * We use this technique (creating a variable, and setting it to our control inputs) to
+         * allow us to avoid setting the same motors/servos power more than once per loop. That can
+         * create erratic behavior.
+         */
+
+        /*
+         * The launch() function handles setting motor velocity, and running the windmill servo
+         * to feed the elements into the launcher wheel.
+         */
+
+
+        /*
+         * Show motor powers on the Driver Station via telemetry.
+         */
+        telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
+        telemetry.addLine();
+
         // See ConceptAprilTag.java for how to add a camera compatibility quirk
         initAprilTag();
+        blinkinLedDriver = hardwareMap.get(RevBlinkinLedDriver.class, "blinkin");
         // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
         telemetry.addData(">", "Touch START to start OpMode");
         telemetry.update();
         waitForStart();
-
-
 
         while (opModeIsActive()) {
 
@@ -130,16 +175,23 @@ public class FollowAprilTag extends LinearOpMode {
                 visionPortal.resumeStreaming();
             }
 
+            arcadeDrive(-gamepad1.left_stick_y, gamepad1.right_stick_x);
 
-
-
+            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.SINELON_RAINBOW_PALETTE);
 
 
             List<AprilTagDetection> currentDetections = aprilTag.getDetections();
             boolean has_tags = currentDetections.size() > 0;
 
 
-
+            if (has_tags){
+                //LED ON
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.SINELON_RAINBOW_PALETTE);
+            }
+            else {
+                //LED OFF
+                blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.RED);
+            }
             // Share the CPU.
             sleep(20);
         }
@@ -160,10 +212,10 @@ public class FollowAprilTag extends LinearOpMode {
         // Create the vision portal the easy way.
         if (USE_WEBCAM) {
             visionPortal = VisionPortal.easyCreateWithDefaults(
-                hardwareMap.get(WebcamName.class, "Webcam 1"), aprilTag);
+                    hardwareMap.get(WebcamName.class, "Webcam 1"), aprilTag);
         } else {
             visionPortal = VisionPortal.easyCreateWithDefaults(
-                BuiltinCameraDirection.BACK, aprilTag);
+                    BuiltinCameraDirection.BACK, aprilTag);
         }
 
     }   // end method initAprilTag()
@@ -205,6 +257,18 @@ public class FollowAprilTag extends LinearOpMode {
         telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
         telemetry.addLine("RBE = Range, Bearing & Elevation");
 
+
+
     }   // end method telemetryAprilTag()
+    void arcadeDrive(double forward, double rotate) {
+        leftPower = forward + rotate;
+        rightPower = forward - rotate;
+
+        /*
+         * Send calculated power to motors
+         */
+        leftDrive.setPower(leftPower);
+        rightDrive.setPower(rightPower);
+    }
 
 }   // end class

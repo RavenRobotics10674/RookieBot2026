@@ -175,7 +175,7 @@ public class FollowAprilTag extends LinearOpMode {
                 visionPortal.resumeStreaming();
             }
 
-            arcadeDrive(-gamepad1.left_stick_y, gamepad1.right_stick_x);
+
 
             blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.SINELON_RAINBOW_PALETTE);
 

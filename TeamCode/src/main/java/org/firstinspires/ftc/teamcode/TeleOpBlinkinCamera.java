@@ -177,7 +177,6 @@ public class TeleOpBlinkinCamera extends LinearOpMode {
 
             arcadeDrive(-gamepad1.left_stick_y, gamepad1.right_stick_x);
 
-            blinkinLedDriver.setPattern(RevBlinkinLedDriver.BlinkinPattern.SINELON_RAINBOW_PALETTE);
 
 
             List<AprilTagDetection> currentDetections = aprilTag.getDetections();

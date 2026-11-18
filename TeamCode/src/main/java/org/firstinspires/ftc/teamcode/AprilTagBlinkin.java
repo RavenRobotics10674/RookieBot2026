@@ -118,8 +118,6 @@ public class AprilTagBlinkin extends LinearOpMode {
         telemetry.update();
         waitForStart();
 
-
-
         while (opModeIsActive()) {
 
             telemetryAprilTag();
@@ -215,5 +213,16 @@ public class AprilTagBlinkin extends LinearOpMode {
         telemetry.addLine("RBE = Range, Bearing & Elevation");
 
     }   // end method telemetryAprilTag()
+
+    void arcadeDrive(double forward, double rotate) {
+        leftPower = forward + rotate;
+        rightPower = forward - rotate;
+
+        /*
+         * Send calculated power to motors
+         */
+        leftDrive.setPower(leftPower);
+        rightDrive.setPower(rightPower);
+    }
 
 }   // end class
